@@ -22,4 +22,3 @@ const findClosestTarget = (creep, type, {filter} = {}) => {
 }
 
 export default findClosestTarget
-;
