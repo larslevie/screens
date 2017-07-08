@@ -1,7 +1,9 @@
+import findClosestTarget from 'util.find-closest-target'
+
 const Traits = {
   role: 'upgrader',
   action: 'harvesting',
-  parts: [MOVE, MOVE, CARRY, CARRY, CARRY, WORK, WORK]
+  parts: [MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
 }
 
 const ACTIONS = [
@@ -30,7 +32,7 @@ const upgrader = {
         creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}}) === ERR_NO_PATH &&
         console.log('No path for', creep.name)
     } else {
-      const source = _.sample(creep.room.find(FIND_DROPPED_RESOURCES))
+      const source = findClosestTarget(creep, 'droppedResources')
 
       creep.pickup(source) === ERR_NOT_IN_RANGE &&
         creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}}) === ERR_NO_PATH &&

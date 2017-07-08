@@ -4,7 +4,7 @@ import findClosestTarget from 'util.find-closest-target'
 const Traits = {
   role: 'builder',
   action: 'harvesting',
-  parts: [MOVE, CARRY, CARRY, WORK, WORK]
+  parts: [MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
 }
 
 const ACTIONS = [
@@ -36,11 +36,11 @@ const builder = {
 
       target
         ? creep.build(target) === ERR_NOT_IN_RANGE &&
-        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}}) === ERR_NO_PATH &&
-        console.log('No path for', creep.name)
+          creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}}) === ERR_NO_PATH &&
+          console.log('No path for', creep.name)
         : upgrader.run(creep)
     } else {
-      const source = _.sample(creep.room.find(FIND_DROPPED_RESOURCES))
+      const source = findClosestTarget(creep, 'droppedResources')
 
       creep.pickup(source) === ERR_NOT_IN_RANGE &&
         creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}}) === ERR_NO_PATH &&

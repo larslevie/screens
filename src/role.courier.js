@@ -1,7 +1,7 @@
 const Traits = {
-  role: 'miner',
-  action: 'mining',
-  parts: [MOVE, WORK, WORK, WORK, WORK, WORK]
+  role: 'courier',
+  action: 'moving',
+  parts: [MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY]
 }
 
 const Miner = {
