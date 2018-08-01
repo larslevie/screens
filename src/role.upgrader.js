@@ -3,7 +3,7 @@ import findClosestTarget from 'util.find-closest-target'
 const Traits = {
   role: 'upgrader',
   action: 'harvesting',
-  parts: [MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
+  parts: [MOVE, MOVE, MOVE, MOVE, MOVE, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY]
 }
 
 const ACTIONS = [
@@ -28,15 +28,21 @@ const upgrader = {
     }
 
     if (creep.memory.action === 'upgrading') {
-      creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE &&
-        creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}}) === ERR_NO_PATH &&
-        console.log('No path for', creep.name)
+      creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}})
+      creep.upgradeController(creep.room.controller)
     } else {
-      const source = findClosestTarget(creep, 'droppedResources')
+      const target = findClosestTarget(creep, 'structures', {
+        filter: structure =>
+          STRUCTURE_CONTAINER === structure.structureType &&
+            structure.store[RESOURCE_ENERGY] > 0
+      })
 
-      creep.pickup(source) === ERR_NOT_IN_RANGE &&
-        creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}}) === ERR_NO_PATH &&
-        console.log('No path for', creep.name)
+      if (target) {
+        creep.withdraw(target, RESOURCE_ENERGY)
+        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffaa00'}})
+      } else {
+        creep.moveTo(creep.room.find(FIND_FLAGS)[0])
+      }
     }
   }
 }

@@ -4,7 +4,7 @@ import findClosestTarget from 'util.find-closest-target'
 const Traits = {
   role: 'builder',
   action: 'harvesting',
-  parts: [MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
+  parts: [MOVE, MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY]
 }
 
 const ACTIONS = [
@@ -34,17 +34,28 @@ const builder = {
         ? Game.getObjectById(creep.memory.target.id)
         : findClosestTarget(creep, 'constructionSite')
 
-      target
-        ? creep.build(target) === ERR_NOT_IN_RANGE &&
-          creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}}) === ERR_NO_PATH &&
-          console.log('No path for', creep.name)
-        : upgrader.run(creep)
+      if (target) {
+        creep.build(target)
+        creep.repair(target)
+        creep.moveTo(target, {visualizePathStyle: {stroke: '#f44336'}})
+      } else {
+        upgrader.run(creep)
+      }
     } else {
-      const source = findClosestTarget(creep, 'droppedResources')
+      let target = findClosestTarget(creep, 'structures', {
+        filter: structure =>
+          STRUCTURE_CONTAINER === structure.structureType &&
+            structure.store[RESOURCE_ENERGY] > 0
+      })
 
-      creep.pickup(source) === ERR_NOT_IN_RANGE &&
-        creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}}) === ERR_NO_PATH &&
-        console.log('No path for', creep.name)
+      if (target) {
+        creep.withdraw(target, RESOURCE_ENERGY)
+      } else {
+        target = findClosestTarget(creep, 'sources')
+        creep.harvest(target, RESOURCE_ENERGY)
+      }
+
+      creep.moveTo(target, {visualizePathStyle: {stroke: '#f44336'}})
     }
   }
 }
